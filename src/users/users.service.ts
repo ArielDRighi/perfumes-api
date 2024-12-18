@@ -11,8 +11,8 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const { name, email, password } = createUserDto;
-    const user = this.usersRepository.create({ name, email, password });
+    const { name, email, password, role } = createUserDto;
+    const user = this.usersRepository.create({ name, email, password, role });
     return await this.usersRepository.save(user);
   }
 
@@ -27,6 +27,15 @@ export class UsersService {
     }
     return user;
   }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+    return user;
+  }
+
   async remove(id: number): Promise<void> {
     const result = await this.usersRepository.delete(id);
     if (result.affected === 0) {

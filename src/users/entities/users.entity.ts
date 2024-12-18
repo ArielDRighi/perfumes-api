@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Rating } from 'src/ratings/entities/ratings.entity';
+import { UserRole } from 'src/enums/roles.enum';
 
 @Entity('users')
 export class User {
@@ -14,6 +15,13 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER, // Valor por defecto
+  })
+  role: UserRole;
 
   @Column({ default: true })
   isActive: boolean;
