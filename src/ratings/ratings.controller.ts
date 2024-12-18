@@ -8,14 +8,20 @@ import {
   Post,
   Put,
   InternalServerErrorException,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { UpdateRatingDto } from './dto/update-rating.dto';
 import { Rating } from './entities/ratings.entity';
 import { RatingsService } from './ratings.service';
 import { ParfumsService } from 'src/parfums/parfums.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { UserRole } from 'src/enums/roles.enum';
 
 @Controller('ratings')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class RatingsController {
   constructor(
     private readonly ratingsService: RatingsService,
@@ -32,6 +38,7 @@ export class RatingsController {
   }
 
   @Post(':perfumeId/rate')
+  @Roles(UserRole.USER)
   async rateParfum(
     @Param('perfumeId') perfumeId: number,
     @Body() ratingDto: CreateRatingDto,
@@ -59,6 +66,7 @@ export class RatingsController {
   }
 
   @Get()
+  @Roles(UserRole.ADMIN)
   async findAll(): Promise<Rating[]> {
     try {
       return await this.ratingsService.findAll();
@@ -68,6 +76,7 @@ export class RatingsController {
   }
 
   @Get(':id')
+  @Roles(UserRole.USER)
   async findOne(@Param('id') id: number): Promise<Rating> {
     try {
       return await this.ratingsService.findOne(+id);
@@ -89,6 +98,7 @@ export class RatingsController {
   }
 
   @Delete(':id')
+  @Roles(UserRole.ADMIN)
   async remove(@Param('id') id: number): Promise<void> {
     try {
       return await this.ratingsService.remove(id);

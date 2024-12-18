@@ -9,6 +9,7 @@ import { RatingsModule } from './ratings/ratings.module';
 import { RecommendationsController } from './recommendations/recommendations.controller';
 import { RecommendationsService } from './recommendations/recommendations.service';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UsersModule } from './users/users.module';
     ParfumsModule,
     RatingsModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController, RecommendationsController],
   providers: [AppService, RecommendationsService],
