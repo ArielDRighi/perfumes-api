@@ -8,6 +8,7 @@ import { ParfumsModule } from './parfums/parfums.module';
 import { RatingsModule } from './ratings/ratings.module';
 import { RecommendationsController } from './recommendations/recommendations.controller';
 import { RecommendationsService } from './recommendations/recommendations.service';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RecommendationsService } from './recommendations/recommendations.servic
     TypeOrmModule.forRoot(typeOrmConfig),
     ParfumsModule,
     RatingsModule,
+    UsersModule,
   ],
   controllers: [AppController, RecommendationsController],
   providers: [AppService, RecommendationsService],
