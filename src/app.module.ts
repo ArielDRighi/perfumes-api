@@ -5,6 +5,7 @@ import typeOrmConfig from './config/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ParfumsModule } from './parfums/parfums.module';
+import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ParfumsModule } from './parfums/parfums.module';
     }),
     TypeOrmModule.forRoot(typeOrmConfig),
     ParfumsModule,
+    RatingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
