@@ -12,6 +12,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   database: process.env.DATABASE_NAME,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: true,
+  dropSchema: false,
 };
 
 export default typeOrmConfig;

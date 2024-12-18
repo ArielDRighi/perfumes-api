@@ -1,24 +1,39 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
+import { Score } from '../../enums/score.enum';
+import { Season } from '../../enums/season.enum';
+import { EventType } from '../../enums/event-type.enum';
+import { UsageType } from '../../enums/usage-type.enum';
 
 export class CreateParfumDto {
   @IsString()
+  @IsNotEmpty()
   name: string;
 
   @IsString()
+  @IsNotEmpty()
   description: string;
 
-  @IsNumber()
-  longevity: number;
+  @IsEnum(Score)
+  @IsNotEmpty()
+  longevity: Score;
 
-  @IsNumber()
-  sillage: number;
+  @IsEnum(Score)
+  @IsNotEmpty()
+  sillage: Score;
 
-  @IsNumber()
-  projection: number;
+  @IsEnum(Score)
+  @IsNotEmpty()
+  projection: Score;
 
-  @IsString()
-  season: string;
+  @IsEnum(Season)
+  @IsNotEmpty()
+  season: Season;
 
-  @IsString()
-  eventType: string;
+  @IsEnum(EventType)
+  @IsNotEmpty()
+  eventType: EventType;
+
+  @IsEnum(UsageType)
+  @IsNotEmpty()
+  usageType: UsageType;
 }

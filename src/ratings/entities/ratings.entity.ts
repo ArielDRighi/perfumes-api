@@ -3,10 +3,13 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
-import { Season } from '../enums/season.enum';
-import { EventType } from '../enums/event-type.enum';
-import { Score } from '../enums/score.enum';
+import { Season } from '../../enums/season.enum';
+import { EventType } from '../../enums/event-type.enum';
+import { Score } from '../../enums/score.enum';
+import { UsageType } from 'src/enums/usage-type.enum';
+import { Parfum } from 'src/parfums/entities/parfums.entity';
 
 @Entity('ratings')
 export class Rating {
@@ -34,6 +37,16 @@ export class Rating {
   @Column({ type: 'enum', enum: EventType })
   eventType: EventType;
 
+  @Column({ type: 'enum', enum: UsageType })
+  usageType: UsageType;
+
   @CreateDateColumn()
   createdAt: Date;
+
+  @ManyToOne(() => Parfum, (parfum) => parfum.ratings)
+  parfum: Parfum;
+
+  // Relación con User
+  // @ManyToOne(() => User, (user) => user.ratings)
+  // user: User;
 }
