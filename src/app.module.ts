@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import typeOrmConfig from './config/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ParfumsModule } from './parfums/parfums.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { AppService } from './app.service';
       isGlobal: true,
     }),
     TypeOrmModule.forRoot(typeOrmConfig),
+    ParfumsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
