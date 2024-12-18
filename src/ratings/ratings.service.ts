@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,32 +17,52 @@ export class RatingsService {
   ) {}
 
   async create(createRatingDto: CreateRatingDto): Promise<Rating> {
-    const rating = this.ratingsRepository.create(createRatingDto);
-    return this.ratingsRepository.save(rating);
+    try {
+      const rating = this.ratingsRepository.create(createRatingDto);
+      return await this.ratingsRepository.save(rating);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to create rating');
+    }
   }
 
   async findAll(): Promise<Rating[]> {
-    return this.ratingsRepository.find();
+    try {
+      return await this.ratingsRepository.find();
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch ratings');
+    }
   }
 
   async findOne(id: number): Promise<Rating> {
-    const rating = await this.ratingsRepository.findOne({ where: { id } });
-    if (!rating) {
-      throw new NotFoundException(`Rating with ID ${id} not found`);
+    try {
+      const rating = await this.ratingsRepository.findOne({ where: { id } });
+      if (!rating) {
+        throw new NotFoundException(`Rating with ID ${id} not found`);
+      }
+      return rating;
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to fetch rating');
     }
-    return rating;
   }
 
   async update(id: number, updateRatingDto: UpdateRatingDto): Promise<Rating> {
-    await this.findOne(id);
-    await this.ratingsRepository.update(id, updateRatingDto);
-    return this.findOne(id);
+    try {
+      await this.findOne(id);
+      await this.ratingsRepository.update(id, updateRatingDto);
+      return this.findOne(id);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to update rating');
+    }
   }
 
   async remove(id: number): Promise<void> {
-    const result = await this.ratingsRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Rating with ID ${id} not found`);
+    try {
+      const result = await this.ratingsRepository.delete(id);
+      if (result.affected === 0) {
+        throw new NotFoundException(`Rating with ID ${id} not found`);
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to delete rating');
     }
   }
 }

@@ -6,6 +6,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ParfumsModule } from './parfums/parfums.module';
 import { RatingsModule } from './ratings/ratings.module';
+import { RecommendationsController } from './recommendations/recommendations.controller';
+import { RecommendationsService } from './recommendations/recommendations.service';
 
 @Module({
   imports: [
@@ -16,7 +18,7 @@ import { RatingsModule } from './ratings/ratings.module';
     ParfumsModule,
     RatingsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, RecommendationsController],
+  providers: [AppService, RecommendationsService],
 })
 export class AppModule {}
