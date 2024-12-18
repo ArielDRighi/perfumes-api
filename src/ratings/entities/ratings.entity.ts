@@ -10,6 +10,7 @@ import { EventType } from '../../enums/event-type.enum';
 import { Score } from '../../enums/score.enum';
 import { UsageType } from 'src/enums/usage-type.enum';
 import { Parfum } from 'src/parfums/entities/parfums.entity';
+import { User } from 'src/users/entities/users.entity';
 
 @Entity('ratings')
 export class Rating {
@@ -46,7 +47,6 @@ export class Rating {
   @ManyToOne(() => Parfum, (parfum) => parfum.ratings)
   parfum: Parfum;
 
-  // Relación con User
-  // @ManyToOne(() => User, (user) => user.ratings)
-  // user: User;
+  @ManyToOne(() => User, (user) => user.ratings)
+  user: User;
 }
