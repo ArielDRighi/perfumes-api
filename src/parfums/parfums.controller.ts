@@ -16,9 +16,15 @@ import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { UserRole } from 'src/enums/roles.enum';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
 @ApiTags('parfums')
+@ApiBearerAuth('access-token')
 @Controller('parfums')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class ParfumsController {

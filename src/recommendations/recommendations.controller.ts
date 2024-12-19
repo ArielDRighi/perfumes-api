@@ -8,14 +8,21 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { UserRole } from 'src/enums/roles.enum';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 
+@ApiTags('recommendations')
+@ApiBearerAuth('access-token')
 @Controller('recommendations')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class RecommendationsController {
   constructor(private recommendationsService: RecommendationsService) {}
 
-  @ApiTags('recommendations')
   @Get()
   @Roles(UserRole.USER, UserRole.ADMIN)
   @ApiOperation({ summary: 'Get perfume recommendations' })
