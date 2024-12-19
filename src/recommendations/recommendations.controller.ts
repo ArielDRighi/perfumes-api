@@ -8,14 +8,26 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { UserRole } from 'src/enums/roles.enum';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 
 @Controller('recommendations')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class RecommendationsController {
   constructor(private recommendationsService: RecommendationsService) {}
 
+  @ApiTags('recommendations')
   @Get()
   @Roles(UserRole.USER, UserRole.ADMIN)
+  @ApiOperation({ summary: 'Get perfume recommendations' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return perfume recommendations',
+    type: [Parfum],
+  })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
+  @ApiQuery({ name: 'season', enum: Season, required: false })
+  @ApiQuery({ name: 'eventType', enum: EventType, required: false })
+  @ApiQuery({ name: 'usageType', enum: UsageType, required: false })
   async getRecommendations(
     @Query('season') season: Season,
     @Query('eventType') eventType: EventType,

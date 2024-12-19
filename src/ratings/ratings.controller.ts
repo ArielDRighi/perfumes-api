@@ -19,7 +19,9 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { UserRole } from 'src/enums/roles.enum';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+@ApiTags('ratings')
 @Controller('ratings')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class RatingsController {
@@ -29,6 +31,13 @@ export class RatingsController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new rating' })
+  @ApiResponse({
+    status: 201,
+    description: 'The rating has been successfully created.',
+    type: Rating,
+  })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async create(@Body() createRatingDto: CreateRatingDto): Promise<Rating> {
     try {
       return await this.ratingsService.create(createRatingDto);
@@ -39,6 +48,13 @@ export class RatingsController {
 
   @Post(':perfumeId/rate')
   @Roles(UserRole.USER)
+  @ApiOperation({ summary: 'Rate a perfume' })
+  @ApiResponse({
+    status: 201,
+    description: 'The perfume has been successfully rated.',
+  })
+  @ApiResponse({ status: 404, description: 'Perfume not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async rateParfum(
     @Param('perfumeId') perfumeId: number,
     @Body() ratingDto: CreateRatingDto,
@@ -67,6 +83,13 @@ export class RatingsController {
 
   @Get()
   @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Get all ratings' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all ratings',
+    type: [Rating],
+  })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async findAll(): Promise<Rating[]> {
     try {
       return await this.ratingsService.findAll();
@@ -77,6 +100,10 @@ export class RatingsController {
 
   @Get(':id')
   @Roles(UserRole.USER)
+  @ApiOperation({ summary: 'Get a rating by ID' })
+  @ApiResponse({ status: 200, description: 'Return the rating', type: Rating })
+  @ApiResponse({ status: 404, description: 'Rating not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async findOne(@Param('id') id: number): Promise<Rating> {
     try {
       return await this.ratingsService.findOne(+id);
@@ -86,6 +113,14 @@ export class RatingsController {
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Update a rating' })
+  @ApiResponse({
+    status: 200,
+    description: 'The rating has been successfully updated.',
+    type: Rating,
+  })
+  @ApiResponse({ status: 404, description: 'Rating not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async update(
     @Param('id') id: number,
     @Body() updateRatingDto: UpdateRatingDto,
@@ -99,6 +134,13 @@ export class RatingsController {
 
   @Delete(':id')
   @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Delete a rating' })
+  @ApiResponse({
+    status: 200,
+    description: 'The rating has been successfully deleted.',
+  })
+  @ApiResponse({ status: 404, description: 'Rating not found' })
+  @ApiResponse({ status: 500, description: 'Internal server error' })
   async remove(@Param('id') id: number): Promise<void> {
     try {
       return await this.ratingsService.remove(id);
