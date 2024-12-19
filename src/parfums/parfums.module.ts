@@ -3,13 +3,11 @@ import { ParfumsService } from './parfums.service';
 import { ParfumsController } from './parfums.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Parfum } from './entities/parfums.entity';
-import { Rating } from 'src/ratings/entities/ratings.entity';
-import { RatingsService } from 'src/ratings/ratings.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Parfum, Rating])],
+  imports: [TypeOrmModule.forFeature([Parfum])],
   providers: [ParfumsService],
   controllers: [ParfumsController],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, ParfumsService],
 })
 export class ParfumsModule {}

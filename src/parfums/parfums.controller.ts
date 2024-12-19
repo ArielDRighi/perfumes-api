@@ -72,22 +72,4 @@ export class ParfumsController {
   async findOne(@Param('id') id: number): Promise<Parfum> {
     return await this.parfumsService.findOneById(id);
   }
-
-  @Delete(':id')
-  @Roles(UserRole.ADMIN)
-  @ApiOperation({ summary: 'Delete a perfume by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'The perfume has been successfully deleted.',
-  })
-  @ApiResponse({ status: 404, description: 'Perfume not found' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async remove(@Param('id') id: number): Promise<{ message: string }> {
-    try {
-      await this.parfumsService.remove(id);
-      return { message: 'El perfume ha sido eliminado con éxito' };
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to delete perfume');
-    }
-  }
 }

@@ -1,68 +1,73 @@
-import {
-  Injectable,
-  NotFoundException,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { CreateRatingDto } from './dto/create-rating.dto';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Rating } from './entities/ratings.entity';
-import { UpdateRatingDto } from './dto/update-rating.dto';
+import { Rating } from './entities/rating.entity';
+import { CreateRatingDto } from './dto/create-rating.dto';
+import { ParfumsService } from 'src/parfums/parfums.service';
+import { UsersService } from 'src/users/users.service';
+import { Parfum } from 'src/parfums/entities/parfums.entity';
+import { User } from 'src/users/entities/users.entity';
 
 @Injectable()
 export class RatingsService {
   constructor(
     @InjectRepository(Rating)
     private ratingsRepository: Repository<Rating>,
+    private parfumsService: ParfumsService,
+    private usersService: UsersService,
   ) {}
 
   async create(createRatingDto: CreateRatingDto): Promise<Rating> {
-    try {
-      const rating = this.ratingsRepository.create(createRatingDto);
-      return await this.ratingsRepository.save(rating);
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to create rating');
+    const { userId, parfumId, longevity, sillage, projection, comment } =
+      createRatingDto;
+
+    const user = await this.usersService.findOne(userId);
+    const parfum = await this.parfumsService.findOne(parfumId);
+
+    if (!user || !parfum) {
+      throw new BadRequestException('User or Parfum not found');
     }
+
+    const existingRating = await this.ratingsRepository.findOne({
+      where: { user, parfum },
+    });
+    if (existingRating) {
+      throw new BadRequestException('User has already rated this perfume');
+    }
+
+    const rating = this.ratingsRepository.create({
+      user,
+      parfum,
+      longevity,
+      sillage,
+      projection,
+      comment,
+    });
+    await this.ratingsRepository.save(rating);
+
+    await this.updateParfumAverages(parfumId);
+
+    return rating;
   }
 
-  async findAll(): Promise<Rating[]> {
-    try {
-      return await this.ratingsRepository.find();
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to fetch ratings');
-    }
-  }
+  private async updateParfumAverages(parfumId: number) {
+    const ratings = await this.ratingsRepository.find({
+      where: { parfum: { id: parfumId } },
+    });
+    const avgLongevity =
+      ratings.reduce((sum, rating) => sum + rating.longevity, 0) /
+      ratings.length;
+    const avgSillage =
+      ratings.reduce((sum, rating) => sum + rating.sillage, 0) / ratings.length;
+    const avgProjection =
+      ratings.reduce((sum, rating) => sum + rating.projection, 0) /
+      ratings.length;
 
-  async findOne(id: number): Promise<Rating> {
-    try {
-      const rating = await this.ratingsRepository.findOne({ where: { id } });
-      if (!rating) {
-        throw new NotFoundException(`Rating with ID ${id} not found`);
-      }
-      return rating;
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to fetch rating');
-    }
-  }
-
-  async update(id: number, updateRatingDto: UpdateRatingDto): Promise<Rating> {
-    try {
-      await this.findOne(id);
-      await this.ratingsRepository.update(id, updateRatingDto);
-      return this.findOne(id);
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to update rating');
-    }
-  }
-
-  async remove(id: number): Promise<void> {
-    try {
-      const result = await this.ratingsRepository.delete(id);
-      if (result.affected === 0) {
-        throw new NotFoundException(`Rating with ID ${id} not found`);
-      }
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to delete rating');
-    }
+    await this.parfumsService.updateAverages(
+      parfumId,
+      avgLongevity,
+      avgSillage,
+      avgProjection,
+    );
   }
 }
