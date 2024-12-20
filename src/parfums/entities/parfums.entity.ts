@@ -1,9 +1,9 @@
-import { EventType } from 'src/enums/event-type.enum';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Rating } from 'src/ratings/entities/rating.entity';
 import { Score } from 'src/enums/score.enum';
 import { Season } from 'src/enums/season.enum';
+import { EventType } from 'src/enums/event-type.enum';
 import { UsageType } from 'src/enums/usage-type.enum';
-import { Rating } from 'src/ratings/entities/ratings.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('parfums')
 export class Parfum {
@@ -34,6 +34,24 @@ export class Parfum {
   @Column({ type: 'enum', enum: UsageType, nullable: true })
   usageType: UsageType;
 
-  @OneToMany(() => Rating, (rating) => rating.parfum, { cascade: true })
+  @Column({ type: 'float', default: 0 })
+  avgLongevity: number;
+
+  @Column({ type: 'float', default: 0 })
+  avgSillage: number;
+
+  @Column({ type: 'float', default: 0 })
+  avgProjection: number;
+
+  @Column({ type: 'enum', enum: Season, nullable: true })
+  avgSeason: Season;
+
+  @Column({ type: 'enum', enum: EventType, nullable: true })
+  avgEventType: EventType;
+
+  @Column({ type: 'enum', enum: UsageType, nullable: true })
+  avgUsageType: UsageType;
+
+  @OneToMany(() => Rating, (rating) => rating.parfum)
   ratings: Rating[];
 }

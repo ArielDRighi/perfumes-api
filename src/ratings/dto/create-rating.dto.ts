@@ -1,46 +1,49 @@
-import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Score } from '../../enums/score.enum';
-import { Season } from '../../enums/season.enum';
-import { EventType } from '../../enums/event-type.enum';
+import { Score } from 'src/enums/score.enum';
+import { EventType } from 'src/enums/event-type.enum';
+import { Season } from 'src/enums/season.enum';
 import { UsageType } from 'src/enums/usage-type.enum';
 
 export class CreateRatingDto {
-  @ApiProperty({ example: 1 })
-  @IsNumber()
+  @IsNotEmpty()
   userId: number;
 
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  perfumeId: number;
-
-  @ApiProperty({ enum: Score, example: Score.One })
-  @IsEnum(Score)
   @IsNotEmpty()
-  longevity: Score;
+  parfumId: number;
 
-  @ApiProperty({ enum: Score, example: Score.Two })
+  @ApiProperty({ enum: Score, example: Score.Five })
   @IsEnum(Score)
-  @IsNotEmpty()
-  sillage: Score;
+  @IsOptional()
+  longevity?: Score;
+
+  @ApiProperty({ enum: Score, example: Score.Four })
+  @IsEnum(Score)
+  @IsOptional()
+  sillage?: Score;
 
   @ApiProperty({ enum: Score, example: Score.Three })
   @IsEnum(Score)
-  @IsNotEmpty()
-  projection: Score;
-
-  @ApiProperty({ enum: Season, example: Season.Summer })
-  @IsEnum(Season)
-  @IsNotEmpty()
-  season: Season;
+  @IsOptional()
+  projection?: Score;
 
   @ApiProperty({ enum: EventType, example: EventType.Casual })
   @IsEnum(EventType)
-  @IsNotEmpty()
-  eventType: EventType;
+  @IsOptional()
+  eventType?: EventType;
+
+  @ApiProperty({ enum: Season, example: Season.Summer })
+  @IsEnum(Season)
+  @IsOptional()
+  season?: Season;
 
   @ApiProperty({ enum: UsageType, example: UsageType.Daily })
   @IsEnum(UsageType)
-  @IsNotEmpty()
-  usageType: UsageType;
+  @IsOptional()
+  usageType?: UsageType;
+
+  @ApiProperty({ example: 'Great perfume!', required: false })
+  @IsString()
+  @IsOptional()
+  comment?: string;
 }

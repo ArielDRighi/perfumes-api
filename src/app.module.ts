@@ -5,11 +5,13 @@ import typeOrmConfig from './config/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ParfumsModule } from './parfums/parfums.module';
-import { RatingsModule } from './ratings/ratings.module';
-import { RecommendationsController } from './recommendations/recommendations.controller';
-import { RecommendationsService } from './recommendations/recommendations.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { RatingsService } from './ratings/ratings.service';
+import { RatingsController } from './ratings/ratings.controller';
+import { RecommendationsService } from './recommendations/recommendations.service';
+import { RecommendationsController } from './recommendations/recommendations.controller';
+import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
@@ -22,7 +24,7 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     AuthModule,
   ],
-  controllers: [AppController, RecommendationsController],
-  providers: [AppService, RecommendationsService],
+  controllers: [AppController, RatingsController, RecommendationsController],
+  providers: [AppService, RatingsService, RecommendationsService],
 })
 export class AppModule {}

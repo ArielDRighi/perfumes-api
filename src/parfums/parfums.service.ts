@@ -7,15 +7,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Parfum } from './entities/parfums.entity';
 import { Repository } from 'typeorm';
 import { CreateParfumDto } from './dto/create-parfum.dto';
-import { Rating } from 'src/ratings/entities/ratings.entity';
+import { EventType } from 'src/enums/event-type.enum';
+import { Season } from 'src/enums/season.enum';
+import { UsageType } from 'src/enums/usage-type.enum';
 
 @Injectable()
 export class ParfumsService {
   constructor(
     @InjectRepository(Parfum)
     private parfumsRepository: Repository<Parfum>,
-    @InjectRepository(Rating)
-    private ratingsRepository: Repository<Rating>,
   ) {}
 
   async create(createParfumDto: CreateParfumDto): Promise<Parfum> {
@@ -43,41 +43,27 @@ export class ParfumsService {
     return parfum;
   }
 
-  async updateParfumAverages(perfumeId: number): Promise<void> {
-    try {
-      const parfum = await this.parfumsRepository.findOne({
-        where: { id: perfumeId },
-        relations: ['ratings'],
-      });
-      if (!parfum) {
-        throw new NotFoundException(`Perfume with ID ${perfumeId} not found`);
-      }
-
-      const ratings = parfum.ratings;
-      const longevityAvg = this.calculateAverage(
-        ratings.map((r) => r.longevity),
-      );
-      const sillageAvg = this.calculateAverage(ratings.map((r) => r.sillage));
-      const projectionAvg = this.calculateAverage(
-        ratings.map((r) => r.projection),
-      );
-
-      parfum.longevity = longevityAvg;
-      parfum.sillage = sillageAvg;
-      parfum.projection = projectionAvg;
-      await this.parfumsRepository.save(parfum);
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Failed to update perfume averages',
-      );
-    }
+  async findOne(id: number): Promise<Parfum> {
+    return this.parfumsRepository.findOne({ where: { id } });
   }
 
-  private calculateAverage(values: number[]): number {
-    if (values.length === 0) return 0;
-    const sum = values.reduce((a, b) => a + b, 0);
-    const average = Math.round(sum / values.length);
-    return Math.min(Math.max(average, 1), 5);
+  async updateAverages(
+    id: number,
+    avgLongevity: number,
+    avgSillage: number,
+    avgProjection: number,
+    avgSeason: Season,
+    avgEventType: EventType,
+    avgUsageType: UsageType,
+  ): Promise<void> {
+    await this.parfumsRepository.update(id, {
+      avgLongevity,
+      avgSillage,
+      avgProjection,
+      avgUsageType,
+      avgSeason,
+      avgEventType,
+    });
   }
 
   async remove(id: number): Promise<void> {

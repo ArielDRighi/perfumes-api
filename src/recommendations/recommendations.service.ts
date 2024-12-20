@@ -1,41 +1,36 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EventType } from 'src/enums/event-type.enum';
-import { Season } from 'src/enums/season.enum';
-import { UsageType } from 'src/enums/usage-type.enum';
-import { Parfum } from 'src/parfums/entities/parfums.entity';
 import { Repository } from 'typeorm';
+import { Parfum } from 'src/parfums/entities/parfums.entity';
+import { Season } from 'src/enums/season.enum';
+import { EventType } from 'src/enums/event-type.enum';
+import { UsageType } from 'src/enums/usage-type.enum';
 
 @Injectable()
 export class RecommendationsService {
   constructor(
-    @InjectRepository(Parfum) private parfumeRepository: Repository<Parfum>,
+    @InjectRepository(Parfum)
+    private parfumsRepository: Repository<Parfum>,
   ) {}
 
   async getRecommendations(
     season: Season,
     eventType: EventType,
     usageType: UsageType,
-  ) {
-    try {
-      const parfums = await this.parfumeRepository.find({
-        where: {
-          season,
-          eventType,
-          usageType,
-        },
-      });
-      const sortedParfumes = parfums
-        .map((parfum) => ({
-          ...parfum,
-          averageScore:
-            (parfum.longevity + parfum.sillage + parfum.projection) / 3,
-        }))
-        .sort((a, b) => b.averageScore - a.averageScore);
+    page: number,
+    limit: number,
+  ): Promise<Parfum[]> {
+    const [results, total] = await this.parfumsRepository.findAndCount({
+      where: { season, eventType, usageType },
+      order: {
+        avgLongevity: 'DESC',
+        avgSillage: 'DESC',
+        avgProjection: 'DESC',
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
 
-      return sortedParfumes;
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to fetch recommendations');
-    }
+    return results;
   }
 }
