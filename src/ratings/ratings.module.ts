@@ -10,6 +10,6 @@ import { UsersModule } from 'src/users/users.module';
   imports: [TypeOrmModule.forFeature([Rating]), ParfumsModule, UsersModule],
   providers: [RatingsService],
   controllers: [RatingsController],
-  exports: [RatingsService],
+  exports: [TypeOrmModule, RatingsService],
 })
 export class RatingsModule {}

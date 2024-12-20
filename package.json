@@ -20,8 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "create-users": "ts-node -r tsconfig-paths/register create-users.ts",
     "create-perfumes": "ts-node -r tsconfig-paths/register create-perfumes.ts",
-    "create-ratings": "ts-node -r tsconfig-paths/register create-ratings.ts",
-    "run-all-scripts": "npm-run-all create-users create-perfumes create-ratings"
+    "run-all-scripts": "npm-run-all create-users create-perfumes"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

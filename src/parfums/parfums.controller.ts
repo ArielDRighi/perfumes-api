@@ -72,4 +72,13 @@ export class ParfumsController {
   async findOne(@Param('id') id: number): Promise<Parfum> {
     return await this.parfumsService.findOneById(id);
   }
+
+  @Delete(':id')
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: 'Delete a perfume by ID' })
+  @ApiResponse({ status: 204, description: 'Perfume deleted' })
+  @ApiResponse({ status: 404, description: 'Perfume not found' })
+  async remove(@Param('id') id: number): Promise<void> {
+    await this.parfumsService.remove(id);
+  }
 }

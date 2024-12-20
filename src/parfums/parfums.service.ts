@@ -7,6 +7,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Parfum } from './entities/parfums.entity';
 import { Repository } from 'typeorm';
 import { CreateParfumDto } from './dto/create-parfum.dto';
+import { EventType } from 'src/enums/event-type.enum';
+import { Season } from 'src/enums/season.enum';
+import { UsageType } from 'src/enums/usage-type.enum';
 
 @Injectable()
 export class ParfumsService {
@@ -49,11 +52,28 @@ export class ParfumsService {
     avgLongevity: number,
     avgSillage: number,
     avgProjection: number,
+    avgSeason: Season,
+    avgEventType: EventType,
+    avgUsageType: UsageType,
   ): Promise<void> {
     await this.parfumsRepository.update(id, {
       avgLongevity,
       avgSillage,
       avgProjection,
+      avgUsageType,
+      avgSeason,
+      avgEventType,
     });
+  }
+
+  async remove(id: number): Promise<void> {
+    try {
+      const result = await this.parfumsRepository.delete(id);
+      if (result.affected === 0) {
+        throw new NotFoundException(`Perfume with ID ${id} not found`);
+      }
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to delete perfume');
+    }
   }
 }
