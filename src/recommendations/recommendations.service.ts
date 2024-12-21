@@ -14,14 +14,17 @@ export class RecommendationsService {
   ) {}
 
   async getRecommendations(
-    season: Season,
-    eventType: EventType,
-    usageType: UsageType,
+    avgSeason: Season,
+    avgEventType: EventType,
+    avgUsageType: UsageType,
     page: number,
     limit: number,
   ): Promise<Parfum[]> {
     const [results, total] = await this.parfumsRepository.findAndCount({
-      where: { season, eventType, usageType },
+      where: [
+        { avgSeason, avgEventType, avgUsageType },
+        { season: avgSeason, eventType: avgEventType, usageType: avgUsageType },
+      ],
       order: {
         avgLongevity: 'DESC',
         avgSillage: 'DESC',
