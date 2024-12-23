@@ -6,11 +6,12 @@ import { Strategy } from 'passport-oauth2';
 export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
   constructor() {
     super({
-      authorizationURL: 'https://provider.com/oauth2/authorize',
-      tokenURL: 'https://provider.com/oauth2/token',
+      authorizationURL: 'https://accounts.google.com/o/oauth2/auth',
+      tokenURL: 'https://oauth2.googleapis.com/token',
       clientID: process.env.OAUTH_CLIENT_ID,
       clientSecret: process.env.OAUTH_CLIENT_SECRET,
       callbackURL: 'http://localhost:3000/auth/oauth/callback',
+      scope: ['profile', 'email'],
     });
   }
 

@@ -51,8 +51,8 @@ export class AuthController {
   @Get('oauth/callback')
   @UseGuards(AuthGuard('oauth'))
   async oauthCallback(@Req() req, @Res() res) {
-    const response = await this.authservice.generateJwtToken(req.user);
-
-    res.redirect(`http://localhost:3000?token=${response.accessToken}`);
+    const user = req.user;
+    const jwtToken = this.authservice.generateJwtToken(user);
+    res.redirect(`http://localhost:3000?token=${jwtToken}`);
   }
 }
