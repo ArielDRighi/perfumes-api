@@ -52,7 +52,7 @@ export class AuthController {
   @UseGuards(AuthGuard('oauth'))
   async oauthCallback(@Req() req, @Res() res) {
     const user = req.user;
-    const jwtToken = this.authservice.generateJwtToken(user);
-    res.redirect(`http://localhost:3000?token=${jwtToken}`);
+    const jwtToken = await this.authservice.generateJwtToken(user);
+    res.redirect(`http://localhost:3000?token=${jwtToken.accessToken}`);
   }
 }
