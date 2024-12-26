@@ -37,4 +37,10 @@ export class Rating {
 
   @Column({ type: 'text', nullable: true })
   comment: string;
+
+  @Column({ type: 'text', nullable: true })
+  purchaseLink: string;
+
+  @Column({ type: 'text', nullable: true })
+  reviewLink: string;
 }
