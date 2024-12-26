@@ -1,4 +1,10 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Score } from 'src/enums/score.enum';
 import { EventType } from 'src/enums/event-type.enum';
@@ -46,4 +52,14 @@ export class CreateRatingDto {
   @IsString()
   @IsOptional()
   comment?: string;
+
+  @ApiProperty({ example: 'https://example.com', required: false })
+  @IsUrl()
+  @IsOptional()
+  purchaseLink?: string;
+
+  @ApiProperty({ example: 'https://youtube.com', required: false })
+  @IsUrl()
+  @IsOptional()
+  reviewLink?: string;
 }

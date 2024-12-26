@@ -26,6 +26,8 @@ export class RatingsService {
       usageType,
       eventType,
       comment,
+      purchaseLink,
+      reviewLink,
     } = createRatingDto;
 
     const user = await this.usersService.findOne(userId);
@@ -52,6 +54,8 @@ export class RatingsService {
       usageType,
       eventType,
       comment,
+      purchaseLink,
+      reviewLink,
     });
     await this.ratingsRepository.save(rating);
 
